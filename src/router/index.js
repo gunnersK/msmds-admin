@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '买什么都省', icon: 'dashboard' }
     }]
   },
 
@@ -60,13 +60,19 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/example/table',
     name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    meta: { title: '弹窗管理', icon: 'el-icon-s-help' },
     children: [
+      {
+        path: 'popWin',
+        name: 'PopWin',
+        component: () => import('@/views/popWin/index'),
+        meta: { title: '弹窗配置', icon: 'table' }
+      },
       {
         path: 'table',
         name: 'Table',
         component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        meta: { title: 'Table', icon: 'tree' }
       },
       {
         path: 'tree',
