@@ -1,9 +1,16 @@
 <template>
   <div class="app-container">
+    <div class="filter-container">
+      <el-input v-model="listQuery.title" placeholder="Title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+        Add
+      </el-button>
+    </div>
+
     <el-table
-      :data="list"
+      :data="datalist.list"
       style="width: 100%"
-      height="600px"
+      height="850px"
       element-loading-text="Loading"
       border
       fit
@@ -20,7 +27,7 @@
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="弹窗名称" width="95">
+      <el-table-column label="弹窗名称" width="95" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
@@ -118,13 +125,53 @@
 <!--        </template>-->
 <!--      </el-table-column>-->
     </el-table>
+
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="fetchData" />
+
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
+<!--        <el-form-item label="Type" prop="type">-->
+<!--          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">-->
+<!--            <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="Date" prop="timestamp">-->
+<!--          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />-->
+<!--        </el-form-item>-->
+        <el-form-item label="Title" prop="title">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+<!--        <el-form-item label="Status">-->
+<!--          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">-->
+<!--            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="Imp">-->
+<!--          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="Remark">-->
+<!--          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />-->
+<!--        </el-form-item>-->
+      </el-form>
+<!--      <div slot="footer" class="dialog-footer">-->
+<!--        <el-button @click="dialogFormVisible = false">-->
+<!--          Cancel-->
+<!--        </el-button>-->
+<!--        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">-->
+<!--          Confirm-->
+<!--        </el-button>-->
+<!--      </div>-->
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-  import { getList } from '@/api/table'
+  // import { getList } from '@/api/table'
+  import Pagination from '@/components/Pagination'
 
   export default {
+    components: { Pagination },
     filters: {
       statusFilter(status) {
         const statusMap = {
@@ -153,8 +200,28 @@
     //保存组件内所有数据
     data() {
       return {
-        list: [],
-        listLoading: true
+        total: 0,
+        datalist: {
+          list: [],
+          listLoading: true
+        },
+        listQuery: {
+          page: 1,
+          limit: 10,
+          importance: undefined,
+          title: undefined,
+          type: undefined,
+          sort: '+id'
+        },
+        dialogFormVisible: false,
+        dialogStatus: '',
+        textMap: {
+          update: 'Edit',
+          create: 'Create'
+        },
+        temp: {
+          title: ''
+        }
       }
     },
     //组件初始化
@@ -166,16 +233,27 @@
       fetchData() {
         this.axios({
           method: 'POST',
-          data: {},
+          data: {
+            'pageNo': this.listQuery.page,
+            'pageSize': this.listQuery.limit
+          },
           headers: {'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1OTU4NTQ0IiwidHlwZSI6IjAiLCJleHAiOjE2MDYzMDg0NDAsImlhdCI6MTYwMzYzMDA0MH0.kuTjokWy6qN9z3Bh6XlzF-6pM__iJNDPKBh5m2S2SiM'},
           url: 'https://test.msmds.cn/jplus/admin/popWin/list/all'
         }).then((resp) => {
           //用户类型
 
-          this.list = resp.data.data
+          this.datalist.list = resp.data.data
+          this.total = resp.data.total
           // this.list.forEach(item=>{
           //   item.userType = userType[item.userType]
           // })
+        })
+      },
+      handleCreate() {
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
         })
       }
     }
