@@ -45,7 +45,6 @@
       <el-table-column label="用户类型" width="200" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>  {{ scope.row.userType | filtUser}} </span>
-
         </template>
       </el-table-column>
       <el-table-column label="弹窗场景" width="150" :show-overflow-tooltip="true">
@@ -128,7 +127,8 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="fetchData" />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" center="true">
+      <div style="height: 500px; overflow: auto">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
 <!--        <el-form-item label="Type" prop="type">-->
 <!--          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">-->
@@ -138,9 +138,49 @@
 <!--        <el-form-item label="Date" prop="timestamp">-->
 <!--          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />-->
 <!--        </el-form-item>-->
-        <el-form-item label="Title" prop="title">
+        <el-form-item label="弹窗名称" prop="name">
           <el-input v-model="temp.title" />
         </el-form-item>
+        <el-form-item label="弹窗类型" prop="winType">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+        <el-form-item label="关联动态弹窗" prop="relatedId">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+        <el-form-item label="用户类型" prop="userType">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+        <el-form-item label="弹窗场景" prop="scene">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+        <el-form-item label="弹窗次数" prop="time">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+        <el-form-item label="频率（天）" prop="frequency">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+        <el-form-item label="优先级" prop="priority">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+        <el-form-item label="UI样式" prop="imgUrl">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+        <el-form-item label="跳转地址" prop="desLink">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+        <el-form-item label="总弹窗次数" prop="totalTime">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+        <el-form-item label="前端数据" prop="data">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+        <el-form-item label="最低可见版本号" prop="lowVersion">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+        <el-form-item label="最高可见版本号" prop="highVersion">
+          <el-input v-model="temp.title" />
+        </el-form-item>
+<!--        </el-form-item>-->
 <!--        <el-form-item label="Status">-->
 <!--          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">-->
 <!--            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />-->
@@ -153,6 +193,11 @@
 <!--          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />-->
 <!--        </el-form-item>-->
       </el-form>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
 <!--      <div slot="footer" class="dialog-footer">-->
 <!--        <el-button @click="dialogFormVisible = false">-->
 <!--          Cancel-->
